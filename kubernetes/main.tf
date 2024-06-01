@@ -125,7 +125,7 @@ resource "aws_iam_role_policy_attachment" "tfpolicyattach1" {
 resource "aws_iam_role" "tfnodegrouprole" {
   name = "tfnodegrouprole"
   assume_role_policy = jsonencode({
-    "Version" : "2012-10-17",
+    "Version" : "2012cd-10-17",
     "Statement" : [
       {
         "Effect" : "Allow",
