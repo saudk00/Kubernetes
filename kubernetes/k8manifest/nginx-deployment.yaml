@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: web
+  labels: #could be any label
+    type: deployment
+spec: 
+  replicas: 2 #how many pods to create
+  selector:
+    matchLabels:
+      app: nginx
+  template: #what pods we are creating ex: nginx
+    metadata:
+      labels:
+        app: nginx
+    spec: #specs for container to execute in the pod
+      containers:
+      - name: nginx-container
+        image: nginx:latest
+        resources:
+          limits:
+            memory: "128Mi" #megabytes, how much memory space to add
+            cpu: "250m" #how mich cpu memory to add
+        ports:
+        - containerPort: 80

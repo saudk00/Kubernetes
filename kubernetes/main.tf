@@ -70,24 +70,10 @@ resource "aws_security_group" "tfeks-sg" {
   vpc_id      = aws_vpc.tfvpc12.id
 
   ingress {
-    description = "https"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  ingress {
-    description = "http"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  ingress {
-    description = "ssh"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
+    description = "ALL"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
   egress {
@@ -125,7 +111,7 @@ resource "aws_iam_role_policy_attachment" "tfpolicyattach1" {
 resource "aws_iam_role" "tfnodegrouprole" {
   name = "tfnodegrouprole"
   assume_role_policy = jsonencode({
-    "Version" : "2012cd-10-17",
+    "Version" : "2012-10-17",
     "Statement" : [
       {
         "Effect" : "Allow",
@@ -165,7 +151,17 @@ resource "aws_eks_cluster" "tfcluster" {
     endpoint_public_access = true
     security_group_ids     = [aws_security_group.tfeks-sg.id]
   }
+  access_config {
+    bootstrap_cluster_creator_admin_permissions = true
+  }
   depends_on = [aws_iam_role_policy_attachment.tfpolicyattach1]
+}
+
+resource "aws_launch_template" "cluster_lt" {
+  name = "cluster_lt"
+  vpc_security_group_ids = [aws_security_group.tfeks-sg.id]
+
+  depends_on = [ aws_security_group.tfeks-sg ]
 }
 
 resource "aws_eks_node_group" "tfnodegroup" {
@@ -175,14 +171,19 @@ resource "aws_eks_node_group" "tfnodegroup" {
   ami_type        = "AL2_x86_64"
   instance_types  = [ "t2.micro" ]
   node_group_name = "tfnodegroup"
+  launch_template {
+    id = aws_launch_template.cluster_lt.id
+    version = aws_launch_template.cluster_lt.latest_version
+  }
   scaling_config {
-    desired_size = 2
-    max_size     = 3
+    desired_size = 4
+    max_size     = 4
     min_size     = 1
   }
   depends_on = [
     aws_iam_role_policy_attachment.tfpolicyattach2,
     aws_iam_role_policy_attachment.tfpolicyattach3,
-    aws_iam_role_policy_attachment.tfpolicyattach4
+    aws_iam_role_policy_attachment.tfpolicyattach4,
+    aws_launch_template.cluster_lt
   ]
 }
