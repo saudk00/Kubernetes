@@ -1,0 +1,26 @@
+apiVersion: apps/v1 #identifying the version of api
+kind: DaemonSet #Deploys a singular pod on every single wokrer node that's running
+metadata: #daemonset metadata
+  name: grafana
+  namespace: grafana
+  labels:
+    app: grafana
+spec: #spec for Daemon-Set; no replicas b/c it deployed a Single Pod of every Working Node
+  selector: #selecting the Pods that have this label (grafana-pod)
+    matchLabels:
+      pod: grafana-pod
+  template: #template of the Pod
+    metadata:
+      labels: #label for the Pod
+        pod: grafana-pod
+    spec: #spec for daemon-set pod
+      nodeSelector: #selects the nodes; used to choose the Node where the Pod will be deployed
+        grafana: running #tag given to show slected Node (grafana=running)
+      containers:
+      - name: grafana-container
+        image: grafana/grafana:latest
+        ports:
+        - containerPort: 3000
+
+#kubectl get nodes
+#kubectl label nodes <your-node-id> [key:value]

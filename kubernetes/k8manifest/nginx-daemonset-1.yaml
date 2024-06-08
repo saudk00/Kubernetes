@@ -8,11 +8,11 @@ metadata:
 spec:
   selector:
     matchLabels:
-      pod: block-pod
+      pod: block-pod #which pod the daemonset will be managing
   template:
     metadata:
       labels:
-        pod: block-pod
+        pod: block-pod #pod being managed
     spec:
       nodeSelector:
         test: passed

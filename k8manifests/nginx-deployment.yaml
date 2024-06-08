@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: #data of your deployment
+  name: nginx-deployment
+  namespace: web-apps #namespace of your deployment (see line 1)
+  labels: #labels of your deployment, why is it given? will select the pod it will manage; best practice to give kubernetes objects names/labels; a way to identify and target those labels
+    type: deployment #key value pair
+spec: #spec for deployed pods
+  replicas: 2
+  selector:
+    matchLabels:
+      pod: nginx #label of pod matching line 16; should match the label (key:value) for your pod
+  template: 
+    metadata:
+      labels:
+        pod: nginx #label of pod
+    spec:
+      containers:
+      - name: nginx-container
+        image: nginx:latest #specifies the docker image:tag
+        ports:
+        - containerPort: 80 #listens on port 80
+
+# k8 apply -f nginx-deployment.ayml
+# k8 get pods -n web-apps
+# k8 get deployments -n web-apps

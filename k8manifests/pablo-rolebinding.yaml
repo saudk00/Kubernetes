@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pablo-rb
+  namespace: web-apps
+subjects:
+- kind: User
+  name: pablo
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: pod-deployment-service-reader
+  apiGroup: rbac.authorization.k8s.io

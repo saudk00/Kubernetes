@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: grafana
+spec: 
+  replicas: 2 #number of replicas for each node
+  selector:
+    matchLabels:
+      name: grafana
+  template: 
+    metadata:
+      labels:
+        name: grafana
+    spec:
+      containers:
+      - name: grafana-container
+        image: grafana/grafana:latest
+        ports:
+        - containerPort: 3000
