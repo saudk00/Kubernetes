@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment-pv
+  namespace: webns
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx-pv
+  template:
+    metadata:
+      labels:
+        app: nginx-pv
+    spec: 
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        volumeMounts: #name of the volume and mount path
+          - name: nginxvolume
+            mountPath: /usr/share/nginx/html #mount point
+      volumes: 
+        - name: nginxvolume
+          persistentVolumeClaim: #name of pvc
+            claimName: web-pvc

@@ -1,0 +1,16 @@
+apiVersion: v1
+data:
+  mapRoles: |
+    - groups:
+      - system:bootstrappers
+      - system:nodes
+      rolearn: arn:aws:iam::637423414709:role/tfnodegrouprole
+      username: system:node:{{EC2PrivateDNSName}}
+  mapUsers: |
+    - usearn: arn:aws:iam::637423414709:user/k8tfuser
+      username: k8tfuser
+      groups: []
+kind: ConfigMap
+metadata:
+  name: aws-auth
+  namespace: kube-system

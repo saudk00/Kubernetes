@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata: 
+  namespace: webns
+  name: web-pvc
+  labels:
+    course: atlas-tech
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx:latest
+    ports:
+    - containerPort: 80
+  volumes:
+  - name: sc-pvc-volume
+    persistentVolumeClaim:
+      claimName: sc-pvc

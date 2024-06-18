@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: clusterip
+  namespace: web # must be in same space as the deployment
+spec:
+  selector:
+    app: nginx # according to line 12 and 16 from nginx-deployment.yaml. selects label of the pod
+  ports:
+    - protocol: TCP
+      port: 80 # service's port
+      targetPort: 80 # pod's port
+  type: ClusterIP #for internal communication

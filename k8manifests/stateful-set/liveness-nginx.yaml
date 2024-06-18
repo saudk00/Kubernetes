@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpd
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: httpd
+  template:
+    metadata:
+      labels:
+        app: httpd
+    spec:
+      containers:
+      - image: httpd:latest
+        name: httpd
+        ports:
+        - containerPort: 80
+        livenessProbe:
+          exec:
+            command:
+              - sh
+              - -c
+              - /usr/bin/ls
+              - /usr/local/apache2/htdocs
+          initialDelaySeconds: 15 #initial delay before the first probe is initiated
+          periodSeconds: 10 #time-interval between the consecutive probes
+        readinessProbe:
+          exec:
+            command:
+              - touch
+              - /tmp/readiness
+          initialDelaySeconds: 15
+          periodSeconds: 10

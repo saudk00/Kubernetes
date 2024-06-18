@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: #data of your deployment
+  name: nginx-deployment
+  namespace: web #namespace of your deployment (see line 1)
+  labels: #labels of your deployment, why is it given? will select the pod it will manage; best practice to give kubernetes objects names/labels; a way to identify and target those labels
+    type: deployment #key value pair
+spec: #spec for deployed pods
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx #label of pod matching line 16; should match the label (key:value) for your pod
+  template: 
+    metadata:
+      labels:
+        app: nginx #label of pod
+    spec: #specs for containers to execute in the pod
+      nodeSelector:
+        topology.kubernetes.io/zone: us-east-1a
+      containers:
+      - name: nginx-container
+        image: nginx:latest #specifies the docker image:tag
+        #resources: # this is what the deployment use
+          #limits: # here to make sure deployment does not go past this number
+            #memory: "128Mi" #megabytes, how much memory space to add
+            #cpu: "250m" #how much cpu memory to add
+        ports:
+        - containerPort: 80 #listens on port 80
+        LivenessProbe:
+          exec: #allows you to run commands
+            command:
+            - /bin/bash
+            - -c
+            - curl -f http://localhost/ || exit1 #if nginx is working it will go through
+          initialDelaySeconds: 30 #waits to run command until 20 sec after the continer starts running
+          periodSeconds: 10 #runs this command ever 10 sec after the inital 30
+        readinessProbe:
+          httpget:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - touch
+            - /tmp/readiness
+          initialDelaySeconds: 30
+          periodSeconds: 10          

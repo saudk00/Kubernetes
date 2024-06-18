@@ -1,0 +1,20 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  data:
+    mapRoles: |
+      - groups:
+        - system:bootstrappers
+        - system:nodes
+        rolearn: arn:aws:iam::637423414709:role/tfnodegrouprole
+        username: system:node:{{EC2PrivateDNSName}}
+  kind: ConfigMap
+  metadata:
+    creationTimestamp: "2024-06-12T00:09:46Z"
+    name: aws-auth
+    namespace: kube-system
+    resourceVersion: "1176"
+    uid: 1c706cf1-8a7f-42e1-bdd1-fc6d2e2841ca
+kind: List
+metadata:
+  resourceVersion: ""
